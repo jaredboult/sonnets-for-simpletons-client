@@ -32,6 +32,7 @@
 	"type": "module",
 	"dependencies": {
 		"@fontsource/chelsea-market": "^5.0.8",
+		"@microsoft/signalr": "^7.0.10",
 		"@picocss/pico": "^1.5.10"
 	}
 }

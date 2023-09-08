@@ -1,18 +1,67 @@
+<script lang="ts">
+    import type { HubConnection } from "@microsoft/signalr";
+    import * as signalR from "@microsoft/signalr";
+
+    let messages : string[] = [];
+    let roomId = "";
+    function setUpSignalR () : HubConnection {
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl("https://localhost:7155/connect")
+            .withAutomaticReconnect()
+            .configureLogging(signalR.LogLevel.Information)
+            .build();
+
+        connection.on("ReceiveMessage", (message: string) => {
+            messages = [...messages, message]
+        });
+
+        connection.on("JoinRoom", (joinRoomResponse) => {
+            messages = [...messages, JSON.stringify(joinRoomResponse)]
+        });
+
+        async function start() {
+            try {
+                await connection.start();
+                console.log("SignalR Connected.")
+            } catch (err) {
+                console.log(err);
+            }
+        }
+
+        start();
+
+        return connection;
+    }
+
+    const connection = setUpSignalR();
+
+    function joinRoom(): void {
+        connection.invoke("JoinRoom", roomId);
+    }
+</script>
+
 <main class="container">
+    {#each messages as message}
+        <p>{message}</p>
+    {/each}
+
     <div class="home-page-action" id="new-game">
         <button>New game</button>
     </div>
 
     <div class="home-page-action" id="join-game">
-        <form method="POST">
+        <form>
             <label for="room-code">Room code</label>
             <input
                     id="room-code"
                     name="room-code"
                     autocomplete="off"
-                    required>
-            <input type="submit" value="Join">
+                    required
+                    bind:value={roomId}>
+            <button on:click={joinRoom}>Join</button>
         </form>
     </div>
 </main>
+
+
 
