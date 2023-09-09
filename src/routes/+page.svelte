@@ -15,8 +15,14 @@
             messages = [...messages, message]
         });
 
+        connection.on("CreateRoom", (createRoomResponse: string) => {
+            const newMessage = JSON.stringify(createRoomResponse);
+            messages = [...messages, newMessage];
+        })
+
         connection.on("JoinRoom", (joinRoomResponse) => {
-            messages = [...messages, JSON.stringify(joinRoomResponse)]
+            const newMessage = JSON.stringify(joinRoomResponse);
+            messages = [...messages, newMessage];
         });
 
         async function start() {
@@ -38,6 +44,10 @@
     function joinRoom(): void {
         connection.invoke("JoinRoom", roomId);
     }
+
+    function createRoom(): void {
+        connection.invoke("CreateRoom");
+    }
 </script>
 
 <main class="container">
@@ -46,7 +56,7 @@
     {/each}
 
     <div class="home-page-action" id="new-game">
-        <button>New game</button>
+        <button on:click={createRoom}>New game</button>
     </div>
 
     <div class="home-page-action" id="join-game">
