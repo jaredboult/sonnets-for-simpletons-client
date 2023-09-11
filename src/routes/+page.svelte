@@ -1,52 +1,33 @@
 <script lang="ts">
-    import type { HubConnection } from "@microsoft/signalr";
-    import * as signalR from "@microsoft/signalr";
+    import {goto} from "$app/navigation";
 
+    export let data;
+    let connection = data.connection;
     let messages : string[] = [];
     let roomId = "";
-    function setUpSignalR () : HubConnection {
-        const connection = new signalR.HubConnectionBuilder()
-            .withUrl("https://localhost:7155/connect")
-            .withAutomaticReconnect()
-            .configureLogging(signalR.LogLevel.Information)
-            .build();
 
-        connection.on("ReceiveMessage", (message: string) => {
-            messages = [...messages, message]
-        });
+    connection.on("ReceiveMessage", (message: string) => {
+        messages = [...messages, message]
+    });
 
-        connection.on("CreateRoom", (createRoomResponse: string) => {
-            const newMessage = JSON.stringify(createRoomResponse);
-            messages = [...messages, newMessage];
-        })
+    connection.on("CreateRoomResponse", (createRoomResponse: string) => {
+        const newMessage = JSON.stringify(createRoomResponse);
+        messages = [...messages, newMessage];
+    })
 
-        connection.on("JoinRoom", (joinRoomResponse) => {
-            const newMessage = JSON.stringify(joinRoomResponse);
-            messages = [...messages, newMessage];
-        });
-
-        async function start() {
-            try {
-                await connection.start();
-                console.log("SignalR Connected.")
-            } catch (err) {
-                console.log(err);
-            }
-        }
-
-        start();
-
-        return connection;
-    }
-
-    const connection = setUpSignalR();
+    connection.on("JoinRoomResponse", (joinRoomResponse) => {
+        const newMessage = JSON.stringify(joinRoomResponse);
+        messages = [...messages, newMessage];
+    });
 
     function joinRoom(): void {
         connection.invoke("JoinRoom", roomId);
+        goto('/name');
     }
 
     function createRoom(): void {
         connection.invoke("CreateRoom");
+        goto('/name');
     }
 </script>
 

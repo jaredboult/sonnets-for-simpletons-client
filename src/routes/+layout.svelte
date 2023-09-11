@@ -1,7 +1,10 @@
-<script>
+<script lang="ts">
     import '@fontsource/chelsea-market';
     import Header from "./Header.svelte";
     import '@picocss/pico';
+    import type { LayoutData } from "../../.svelte-kit/types/src/routes/$types";
+
+    export let data : LayoutData;
 </script>
 
 <svelte:head>
