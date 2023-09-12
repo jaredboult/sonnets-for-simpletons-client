@@ -1,33 +1,34 @@
 <script lang="ts">
-    import {goto} from "$app/navigation";
+    import { goto } from "$app/navigation";
+    import { roomCode } from "../store";
 
     export let data;
     let connection = data.connection;
     let messages : string[] = [];
     let roomId = "";
 
-    connection.on("ReceiveMessage", (message: string) => {
-        messages = [...messages, message]
-    });
-
-    connection.on("CreateRoomResponse", (createRoomResponse: string) => {
-        const newMessage = JSON.stringify(createRoomResponse);
-        messages = [...messages, newMessage];
+    connection.on("CreateRoom", (createRoomResponse) => {
+       console.log(JSON.stringify(createRoomResponse));
+       if (createRoomResponse.success){
+           roomCode.set(createRoomResponse.roomId);
+           goto('/name');
+       }
     })
 
-    connection.on("JoinRoomResponse", (joinRoomResponse) => {
-        const newMessage = JSON.stringify(joinRoomResponse);
-        messages = [...messages, newMessage];
+    connection.on("JoinRoom", (joinRoomResponse) => {
+        console.log(JSON.stringify(joinRoomResponse));
+        if(joinRoomResponse.success){
+            roomCode.set(joinRoomResponse.roomId);
+            goto('/name');
+        }
     });
 
     function joinRoom(): void {
         connection.invoke("JoinRoom", roomId);
-        goto('/name');
     }
 
     function createRoom(): void {
         connection.invoke("CreateRoom");
-        goto('/name');
     }
 </script>
 

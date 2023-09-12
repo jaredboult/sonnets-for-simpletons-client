@@ -1,14 +1,15 @@
 <script lang="ts">
+    import { goto } from "$app/navigation";
+    import { roomCode } from "../../store";
+
     export let data;
     let connection = data.connection;
     let name = "";
-    let response : boolean;
-    let fullResponse: string;
 
-    connection.on("UpdatePlayerNameResponse", (message : any) => {
-        // gross :X
-        response = message.success;
-        fullResponse = JSON.stringify(message, null, 2);
+    connection.on("UpdatePlayerName", (message) => {
+        if(message.success && $roomCode !== ""){
+            goto('/play/' + $roomCode)
+        }
     })
 
     function assignName(): void {
@@ -16,7 +17,7 @@
     }
 </script>
 
-{#if response === undefined}
+<main class="container">
     <form>
         <label for="Name">Name</label>
         <input
@@ -27,11 +28,6 @@
                 bind:value={name}>
         <button on:click={assignName}>Submit</button>
     </form>
-{:else if response}
-    <p>Success</p>
-    <p>{fullResponse}</p>
-{:else}
-    <p>Fail</p>
-    <p>{fullResponse}</p>
-{/if}
+</main>
+
 
