@@ -17,16 +17,23 @@
     }
 </script>
 
-<main class="container">
-    <form>
-        <label for="Name">Name</label>
+<main class="container mx-auto max-w-lg py-4">
+    <form class="form-control">
+        <label for="Name" class="label">
+            <span class="label-text">Name</span>
+        </label>
         <input
                 id="player-name"
                 name="player-name"
+                class="input input-lg input-bordered w-full text-center"
                 autocomplete="off"
                 required
                 bind:value={name}>
-        <button on:click={assignName}>Submit</button>
+        <button
+                class="btn btn-primary btn-large btn-block mt-4"
+                on:click={assignName}>
+            Choose name
+        </button>
     </form>
 </main>
 

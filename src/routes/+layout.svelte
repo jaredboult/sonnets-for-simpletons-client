@@ -1,10 +1,19 @@
 <script lang="ts">
     import '@fontsource/chelsea-market';
+    import "../app.css";
     import Header from "./Header.svelte";
-    import '@picocss/pico';
-    import type { LayoutData } from "../../.svelte-kit/types/src/routes/$types";
+    import { onNavigate } from "$app/navigation";
 
-    export let data : LayoutData;
+    onNavigate((navigation) => {
+        if (!document.startViewTransition) return;
+
+        return new Promise((resolve) => {
+            document.startViewTransition(async () => {
+                resolve();
+                await navigation.complete;
+            });
+        });
+    });
 </script>
 
 <svelte:head>

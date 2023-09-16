@@ -4,7 +4,6 @@
 
     export let data;
     let connection = data.connection;
-    let messages : string[] = [];
     let roomId = "";
 
     connection.on("CreateRoom", (createRoomResponse) => {
@@ -32,25 +31,32 @@
     }
 </script>
 
-<main class="container">
-    {#each messages as message}
-        <p>{message}</p>
-    {/each}
-
-    <div class="home-page-action" id="new-game">
-        <button on:click={createRoom}>New game</button>
+<main class="container mx-auto max-w-lg py-4">
+    <div class="flex justify-center pb-4" id="new-game">
+        <button class="btn btn-primary btn-large btn-wide" on:click={createRoom}>New game</button>
     </div>
 
-    <div class="home-page-action" id="join-game">
-        <form>
-            <label for="room-code">Room code</label>
+    <div class="divider">OR</div>
+
+    <div class="flex justify-center" id="join-game">
+        <form class="form-control">
+            <label
+                    for="room-code"
+                    class="label">
+                <span class="label-text">Room code</span>
+            </label>
             <input
                     id="room-code"
                     name="room-code"
+                    class="input input-lg input-bordered w-full text-center"
                     autocomplete="off"
                     required
                     bind:value={roomId}>
-            <button on:click={joinRoom}>Join</button>
+            <button
+                    class="btn btn-primary btn-large btn-block mt-4"
+                    on:click={joinRoom}>
+                Join Game
+            </button>
         </form>
     </div>
 </main>
