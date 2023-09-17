@@ -7,7 +7,7 @@
     let roomId = "";
 
     connection.on("CreateRoom", (createRoomResponse) => {
-       console.log(JSON.stringify(createRoomResponse));
+       console.log(createRoomResponse);
        if (createRoomResponse.success){
            roomCode.set(createRoomResponse.roomId);
            goto('/name');
@@ -15,7 +15,7 @@
     })
 
     connection.on("JoinRoom", (joinRoomResponse) => {
-        console.log(JSON.stringify(joinRoomResponse));
+        console.log(joinRoomResponse);
         if(joinRoomResponse.success){
             roomCode.set(joinRoomResponse.roomId);
             goto('/name');

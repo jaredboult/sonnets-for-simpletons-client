@@ -6,14 +6,15 @@
     let connection = data.connection;
     let name = "";
 
-    connection.on("UpdatePlayerName", (message) => {
-        if(message.success && $roomCode !== ""){
+    connection.on("UpdatePlayerName", (updatePlayerNameResponse) => {
+        console.log(updatePlayerNameResponse);
+        if(updatePlayerNameResponse.success && $roomCode !== ""){
             goto('/play/' + $roomCode)
         }
     })
 
     function assignName(): void {
-        connection.invoke("UpdatePlayerName", name);
+        connection.invoke("UpdatePlayerName", name, $roomCode);
     }
 </script>
 
