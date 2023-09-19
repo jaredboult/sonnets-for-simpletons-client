@@ -5,6 +5,7 @@
 	export let data;
 	let connection = data.connection;
 	let roomId = '';
+	roomCode.set('');
 
 	connection.on('CreateRoom', (createRoomResponse) => {
 		console.log(createRoomResponse);
@@ -23,7 +24,7 @@
 	});
 
 	function joinRoom(): void {
-		connection.invoke('JoinRoom', roomId);
+		connection.invoke('JoinRoom', roomId.toUpperCase());
 	}
 
 	function createRoom(): void {

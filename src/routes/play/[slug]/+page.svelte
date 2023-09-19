@@ -1,22 +1,30 @@
 <script lang="ts">
 	import { roomCode } from '../../../store';
+	import { goto } from '$app/navigation';
 
 	export let data;
-	let connection = data.connection;
+	let { connection, slug } = data;
 	let playerNames: string[] = [];
 
-	function getRoomDetails(roomId: string) {
-		connection.invoke('GetRoomDetails', roomId);
+	function getRoomDetails(): void {
+		if (!$roomCode) {
+			roomCode.set(slug);
+		}
+		console.log();
+		connection.invoke('GetRoomDetails', $roomCode);
 	}
-
-	getRoomDetails($roomCode);
 
 	connection.on('ReceiveRoomDetails', (getRoomDetailsResponse) => {
 		console.log(getRoomDetailsResponse);
 		if (getRoomDetailsResponse.success) {
 			playerNames = getRoomDetailsResponse.playerNames;
+		} else {
+			roomCode.set('');
+			goto('/');
 		}
 	});
+
+	getRoomDetails();
 </script>
 
 <main class="container mx-auto max-w-lg py-4">

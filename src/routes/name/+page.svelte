@@ -2,6 +2,10 @@
 	import { goto } from '$app/navigation';
 	import { roomCode } from '../../store';
 
+	if (!$roomCode) {
+		goto('/');
+	}
+
 	export let data;
 	let connection = data.connection;
 	let name = '';
