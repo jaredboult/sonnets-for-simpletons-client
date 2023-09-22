@@ -10,15 +10,12 @@
 	let connection = data.connection;
 	let name = '';
 
-	connection.on('UpdatePlayerName', (updatePlayerNameResponse) => {
-		console.log(updatePlayerNameResponse);
-		if (updatePlayerNameResponse.success && $roomCode !== '') {
-			goto('/play/' + $roomCode);
+	async function assignName(): Promise<void> {
+		const assignNameResponse = await connection.invoke('UpdatePlayerName', name, $roomCode);
+		console.log(assignNameResponse);
+		if (assignNameResponse.success && $roomCode !== '') {
+			await goto('/play/' + $roomCode);
 		}
-	});
-
-	function assignName(): void {
-		connection.invoke('UpdatePlayerName', name, $roomCode);
 	}
 </script>
 

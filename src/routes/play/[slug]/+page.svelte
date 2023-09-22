@@ -6,15 +6,11 @@
 	let { connection, slug } = data;
 	let playerNames: string[] = [];
 
-	function getRoomDetails(): void {
+	async function getRoomDetails(): Promise<void> {
 		if (!$roomCode) {
 			roomCode.set(slug);
 		}
-		console.log();
-		connection.invoke('GetRoomDetails', $roomCode);
-	}
-
-	connection.on('ReceiveRoomDetails', (getRoomDetailsResponse) => {
+		const getRoomDetailsResponse = await connection.invoke('GetRoomDetails', $roomCode);
 		console.log(getRoomDetailsResponse);
 		if (getRoomDetailsResponse.success) {
 			playerNames = getRoomDetailsResponse.playerNames;
@@ -22,9 +18,14 @@
 			roomCode.set('');
 			goto('/');
 		}
-	});
+	}
 
 	getRoomDetails();
+
+	connection.on('UpdateRoomDetails', (updateRoomDetailsMessage) => {
+		console.log(updateRoomDetailsMessage);
+		playerNames = updateRoomDetailsMessage.playerNames;
+	});
 </script>
 
 

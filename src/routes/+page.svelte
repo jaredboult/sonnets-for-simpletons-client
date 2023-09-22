@@ -7,28 +7,21 @@
 	let roomId = '';
 	roomCode.set('');
 
-	connection.on('CreateRoom', (createRoomResponse) => {
+	async function createRoom(): Promise<void> {
+		const createRoomResponse = await connection.invoke('CreateRoom');
 		console.log(createRoomResponse);
 		if (createRoomResponse.success) {
 			roomCode.set(createRoomResponse.roomId);
-			goto('/name');
+			await goto('/name');
 		}
-	});
-
-	connection.on('JoinRoom', (joinRoomResponse) => {
-		console.log(joinRoomResponse);
-		if (joinRoomResponse.success) {
-			roomCode.set(joinRoomResponse.roomId);
-			goto('/name');
-		}
-	});
-
-	function joinRoom(): void {
-		connection.invoke('JoinRoom', roomId.toUpperCase());
 	}
 
-	function createRoom(): void {
-		connection.invoke('CreateRoom');
+	async function joinRoom(): Promise<void> {
+		const joinRoomResponse = await connection.invoke('JoinRoom', roomId.toUpperCase());
+		if (joinRoomResponse.success) {
+			roomCode.set(joinRoomResponse.roomId);
+			await goto('/name');
+		}
 	}
 </script>
 
