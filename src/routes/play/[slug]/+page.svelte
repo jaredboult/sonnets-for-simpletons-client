@@ -27,18 +27,21 @@
 	getRoomDetails();
 </script>
 
-<main class="container mx-auto max-w-lg py-4">
-	<h1 class="font-black text-xl">{$roomCode}</h1>
 
-	<ol>
+
+<main class="container py-4 flex flex-col">
+	<h1 class="text-2xl font-bold">Players</h1>
+	<ol class="pt-4 pb-12">
 		{#each playerNames as name}
-			<li>{name}</li>
+			<li class="text-lg">{name}</li>
 		{/each}
 	</ol>
-</main>
 
-<style>
-	h1 {
-		text-align: center;
-	}
-</style>
+	<div class="w-full flex justify-center">
+		<button class="btn btn-primary btn-wide">
+			Start Game
+		</button>
+	</div>
+
+
+</main>

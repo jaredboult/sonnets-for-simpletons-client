@@ -32,7 +32,7 @@
 	}
 </script>
 
-<main class="container mx-auto max-w-lg py-4">
+<main class="container py-4">
 	<div class="flex justify-center pb-4" id="new-game">
 		<button class="btn btn-primary btn-large btn-wide" on:click={createRoom}>New game</button>
 	</div>
