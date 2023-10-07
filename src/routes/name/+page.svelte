@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import { roomCode } from '../../store';
+	import { roomCode } from '$lib/stores/roomCode';
+	import { playerGuid } from "$lib/stores/playerGuid";
 
 	if (!$roomCode) {
 		goto('/');
@@ -10,8 +11,20 @@
 	let connection = data.connection;
 	let name = '';
 
+	connection.on('SavePlayerId', (savePlayerIdMessage) => {
+		console.log(savePlayerIdMessage);
+		if (savePlayerIdMessage.success){
+			const value = {
+				id: savePlayerIdMessage.id,
+				timestamp: Date.now()
+			}
+			playerGuid.set(JSON.stringify(value));
+		}
+	});
+
 	async function assignName(): Promise<void> {
-		const assignNameResponse = await connection.invoke('UpdatePlayerName', name, $roomCode);
+		const parsedId = $playerGuid ? JSON.parse($playerGuid).id : "";
+		const assignNameResponse = await connection.invoke('UpdatePlayerName', name, $roomCode, parsedId);
 		console.log(assignNameResponse);
 		if (assignNameResponse.success && $roomCode !== '') {
 			await goto('/play/' + $roomCode);

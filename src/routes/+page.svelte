@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import { roomCode } from '../store';
+	import { roomCode } from '$lib/stores/roomCode';
+	import {playerGuid} from "$lib/stores/playerGuid";
 
 	export let data;
 	let connection = data.connection;
@@ -23,6 +24,17 @@
 			await goto('/name');
 		}
 	}
+
+	connection.on('SavePlayerId', (savePlayerIdMessage) => {
+		console.log(savePlayerIdMessage);
+		if (savePlayerIdMessage.success){
+			const value = {
+				id: savePlayerIdMessage.id,
+				timestamp: Date.now()
+			}
+			playerGuid.set(JSON.stringify(value));
+		}
+	});
 </script>
 
 <main class="container py-4">

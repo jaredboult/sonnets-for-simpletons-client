@@ -1,6 +1,6 @@
 <script>
 	import ShareIcon from "$lib/assets/share_icon.svelte";
-	import { roomCode } from "../store";
+	import { roomCode } from "$lib/stores/roomCode";
 </script>
 
 <div class="navbar justify-between bg-base-100 pb-16">

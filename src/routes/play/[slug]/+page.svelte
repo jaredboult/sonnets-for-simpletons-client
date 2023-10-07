@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { roomCode } from '../../../store';
+	import { roomCode } from '$lib/stores/roomCode';
 	import { goto } from '$app/navigation';
 
 	export let data;
@@ -16,7 +16,7 @@
 			playerNames = getRoomDetailsResponse.playerNames;
 		} else {
 			roomCode.set('');
-			goto('/');
+			await goto('/');
 		}
 	}
 
