@@ -8,10 +8,10 @@
 	}
 
 	export let data;
-	let connection = data.connection;
+	let lobbyHub = data.lobbyHub;
 	let name = '';
 
-	connection.on('SavePlayerId', (savePlayerIdMessage) => {
+	lobbyHub.on('SavePlayerId', (savePlayerIdMessage) => {
 		console.log(savePlayerIdMessage);
 		if (savePlayerIdMessage.success){
 			const value = {
@@ -24,10 +24,10 @@
 
 	async function assignName(): Promise<void> {
 		const parsedId = $playerGuid ? JSON.parse($playerGuid).id : "";
-		const assignNameResponse = await connection.invoke('UpdatePlayerName', name, $roomCode, parsedId);
+		const assignNameResponse = await lobbyHub.invoke('UpdatePlayerName', name, $roomCode, parsedId);
 		console.log(assignNameResponse);
 		if (assignNameResponse.success && $roomCode !== '') {
-			await goto('/play/' + $roomCode);
+			await goto('/lobby/' + $roomCode);
 		}
 	}
 </script>

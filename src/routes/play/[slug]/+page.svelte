@@ -1,48 +1,36 @@
 <script lang="ts">
-	import { roomCode } from '$lib/stores/roomCode';
-	import { goto } from '$app/navigation';
+    import { roomCode } from "$lib/stores/roomCode";
+    import { playerGuid, parsePlayerGuid } from "$lib/stores/playerGuid";
 
-	export let data;
-	let { connection, slug } = data;
-	let playerNames: string[] = [];
+    export let data;
+    let { gameHub, slug } = data;
 
-	async function getRoomDetails(): Promise<void> {
-		if (!$roomCode) {
-			roomCode.set(slug);
-		}
-		const getRoomDetailsResponse = await connection.invoke('GetRoomDetails', $roomCode);
-		console.log(getRoomDetailsResponse);
-		if (getRoomDetailsResponse.success) {
-			playerNames = getRoomDetailsResponse.playerNames;
-		} else {
-			roomCode.set('');
-			await goto('/');
-		}
-	}
+    let question;
 
-	getRoomDetails();
+    async function getQuestion(): Promise<void> {
+        const getQuestionResponse = await gameHub.invoke('GetQuestion', $roomCode);
+        console.log(getQuestionResponse);
+        if (getQuestionResponse.success) {
+            question = getQuestionResponse.answers;
+        }
+    }
 
-	connection.on('UpdateRoomDetails', (updateRoomDetailsMessage) => {
-		console.log(updateRoomDetailsMessage);
-		playerNames = updateRoomDetailsMessage.playerNames;
-	});
+    async function startGame(): Promise<void> {
+        if (!$roomCode) {
+            roomCode.set(slug);
+        }
+        const startGameResponse = await gameHub.invoke('StartGame', $roomCode, parsePlayerGuid($playerGuid));
+        console.log(startGameResponse);
+        if (startGameResponse.success) {
+            await getQuestion();
+        }
+    }
+
+    gameHub.on('UpdateQuestion', (updateQuestionMessage) => {
+        console.log('TODO: update question', updateQuestionMessage);
+    })
+
+    startGame();
 </script>
 
-
-
-<main class="container py-4 flex flex-col">
-	<h1 class="text-2xl font-bold">Players</h1>
-	<ol class="pt-4 pb-12">
-		{#each playerNames as name}
-			<li class="text-lg">{name}</li>
-		{/each}
-	</ol>
-
-	<div class="w-full flex justify-center">
-		<button class="btn btn-primary btn-wide">
-			Start Game
-		</button>
-	</div>
-
-
-</main>
+{JSON.stringify(question, null, 2)}

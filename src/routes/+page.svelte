@@ -1,15 +1,15 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { roomCode } from '$lib/stores/roomCode';
-	import {playerGuid} from "$lib/stores/playerGuid";
+	import { playerGuid } from "$lib/stores/playerGuid";
 
 	export let data;
-	let connection = data.connection;
+	let lobbyHub = data.lobbyHub;
 	let roomId = '';
 	roomCode.set('');
 
 	async function createRoom(): Promise<void> {
-		const createRoomResponse = await connection.invoke('CreateRoom');
+		const createRoomResponse = await lobbyHub.invoke('CreateRoom');
 		console.log(createRoomResponse);
 		if (createRoomResponse.success) {
 			roomCode.set(createRoomResponse.roomId);
@@ -18,14 +18,14 @@
 	}
 
 	async function joinRoom(): Promise<void> {
-		const joinRoomResponse = await connection.invoke('JoinRoom', roomId.toUpperCase());
+		const joinRoomResponse = await lobbyHub.invoke('JoinRoom', roomId.toUpperCase());
 		if (joinRoomResponse.success) {
 			roomCode.set(joinRoomResponse.roomId);
 			await goto('/name');
 		}
 	}
 
-	connection.on('SavePlayerId', (savePlayerIdMessage) => {
+	lobbyHub.on('SavePlayerId', (savePlayerIdMessage) => {
 		console.log(savePlayerIdMessage);
 		if (savePlayerIdMessage.success){
 			const value = {
