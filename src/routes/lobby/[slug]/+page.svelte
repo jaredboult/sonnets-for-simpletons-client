@@ -33,8 +33,6 @@
 	}
 </script>
 
-
-
 <main class="container py-4 flex flex-col">
 	<h1 class="text-2xl font-bold">Players</h1>
 	<ol class="pt-4 pb-12">
@@ -44,10 +42,6 @@
 	</ol>
 
 	<div class="w-full flex justify-center">
-		<button class="btn btn-primary btn-wide" on:click="{startGame}">
-			Start Game
-		</button>
+		<button class="btn btn-primary btn-wide" on:click={startGame}> Start Game </button>
 	</div>
-
-
 </main>

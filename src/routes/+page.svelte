@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { roomCode } from '$lib/stores/roomCode';
-	import { playerGuid } from "$lib/stores/playerGuid";
+	import { playerGuid } from '$lib/stores/playerGuid';
 
 	export let data;
 	let lobbyHub = data.lobbyHub;
@@ -27,11 +27,11 @@
 
 	lobbyHub.on('SavePlayerId', (savePlayerIdMessage) => {
 		console.log(savePlayerIdMessage);
-		if (savePlayerIdMessage.success){
+		if (savePlayerIdMessage.success) {
 			const value = {
 				id: savePlayerIdMessage.id,
 				timestamp: Date.now()
-			}
+			};
 			playerGuid.set(JSON.stringify(value));
 		}
 	});

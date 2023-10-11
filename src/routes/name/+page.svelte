@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { roomCode } from '$lib/stores/roomCode';
-	import { playerGuid } from "$lib/stores/playerGuid";
+	import { playerGuid } from '$lib/stores/playerGuid';
 
 	if (!$roomCode) {
 		goto('/');
@@ -13,17 +13,17 @@
 
 	lobbyHub.on('SavePlayerId', (savePlayerIdMessage) => {
 		console.log(savePlayerIdMessage);
-		if (savePlayerIdMessage.success){
+		if (savePlayerIdMessage.success) {
 			const value = {
 				id: savePlayerIdMessage.id,
 				timestamp: Date.now()
-			}
+			};
 			playerGuid.set(JSON.stringify(value));
 		}
 	});
 
 	async function assignName(): Promise<void> {
-		const parsedId = $playerGuid ? JSON.parse($playerGuid).id : "";
+		const parsedId = $playerGuid ? JSON.parse($playerGuid).id : '';
 		const assignNameResponse = await lobbyHub.invoke('UpdatePlayerName', name, $roomCode, parsedId);
 		console.log(assignNameResponse);
 		if (assignNameResponse.success && $roomCode !== '') {
