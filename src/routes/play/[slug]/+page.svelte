@@ -1,13 +1,15 @@
 <script lang="ts">
     import { roomCode } from "$lib/stores/roomCode";
     import { playerGuid, parsePlayerGuid } from "$lib/stores/playerGuid";
+    import QuestionCard from "../QuestionCard.svelte";
+    import type Question from "../QuestionCard.svelte";
 
     export let data;
     let { gameHub, slug } = data;
 
-    let question;
+    let question: Question;
 
-    async function getQuestion(): Promise<void> {
+    async function getNewQuestion(): Promise<void> {
         const getQuestionResponse = await gameHub.invoke('GetQuestion', $roomCode);
         console.log(getQuestionResponse);
         if (getQuestionResponse.success) {
@@ -22,7 +24,7 @@
         const startGameResponse = await gameHub.invoke('StartGame', $roomCode, parsePlayerGuid($playerGuid));
         console.log(startGameResponse);
         if (startGameResponse.success) {
-            await getQuestion();
+            await getNewQuestion();
         }
     }
 
@@ -33,4 +35,9 @@
     startGame();
 </script>
 
-{JSON.stringify(question, null, 2)}
+{#if question}
+    <QuestionCard
+        question={question}
+        on:click={getNewQuestion}>
+    </QuestionCard>
+{/if}
