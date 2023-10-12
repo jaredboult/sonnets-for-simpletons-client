@@ -3,6 +3,7 @@
 	import { playerGuid, parsePlayerGuid } from '$lib/stores/playerGuid';
 	import QuestionCard from '../QuestionCard.svelte';
 	import type Question from '../QuestionCard.svelte';
+	import { teamName } from '$lib/stores/team';
 
 	export let data;
 	let { gameHub, slug } = data;
@@ -33,7 +34,17 @@
 	}
 
 	gameHub.on('UpdateQuestion', (updateQuestionMessage) => {
-		console.log('TODO: update question', updateQuestionMessage);
+		console.log(updateQuestionMessage);
+		if (updateQuestionMessage.success) {
+			question = updateQuestionMessage.answers;
+		}
+	});
+
+	gameHub.on('NotifyTeam', (notifyTeamMessage) => {
+		console.log(notifyTeamMessage);
+		if (notifyTeamMessage.success) {
+			teamName.set(notifyTeamMessage.teamName);
+		}
 	});
 
 	startGame();
