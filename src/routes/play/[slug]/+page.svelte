@@ -5,6 +5,7 @@
 	import type Question from '../QuestionCard.svelte';
 	import { teamName } from '$lib/stores/team';
 	import { logResponse } from '$lib/connectToHub';
+	import Timer from '../Timer.svelte';
 
 	export let data;
 	let { gameHub, slug } = data;
@@ -46,6 +47,10 @@
 
 	startGame();
 </script>
+
+<div class="flex justify-center">
+	<Timer />
+</div>
 
 {#if question}
 	<QuestionCard {question} on:click={getNewQuestion} />

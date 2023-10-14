@@ -3,7 +3,8 @@ export default {
 	content: ['./src/**/*.{html,js,svelte,ts}'],
 	theme: {
 		fontFamily: {
-			display: ['Chelsea Market, serif']
+			display: ['Chelsea Market, serif'],
+			mono: ['ui-monospace, monospace']
 		},
 		container: {
 			center: true,
