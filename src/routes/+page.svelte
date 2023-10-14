@@ -28,11 +28,7 @@
 	lobbyHub.on('SavePlayerId', (savePlayerIdMessage) => {
 		console.log(savePlayerIdMessage);
 		if (savePlayerIdMessage.success) {
-			const value = {
-				id: savePlayerIdMessage.id,
-				timestamp: Date.now()
-			};
-			playerGuid.set(JSON.stringify(value));
+			playerGuid.set(savePlayerIdMessage.id);
 		}
 	});
 </script>

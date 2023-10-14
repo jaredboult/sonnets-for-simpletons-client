@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { roomCode } from '$lib/stores/roomCode';
 	import { goto } from '$app/navigation';
+	import { playerGuid } from '$lib/stores/playerGuid';
 
 	export let data;
 	let { lobbyHub, slug } = data;
@@ -27,9 +28,21 @@
 		playerNames = updateRoomDetailsMessage.playerNames;
 	});
 
+	lobbyHub.on('StartGame', async (gameHasStartedResponse) => {
+		console.log(gameHasStartedResponse);
+		if (gameHasStartedResponse.success) {
+			await lobbyHub.stop();
+			await goto('/play/' + $roomCode);
+		}
+	});
+
 	async function startGame() {
-		await lobbyHub.stop();
-		await goto('/play/' + $roomCode);
+		const startGameResponse = await lobbyHub.invoke('StartGameForRoom', $roomCode, $playerGuid);
+		console.log(startGameResponse);
+		if (startGameResponse.success) {
+			await lobbyHub.stop();
+			await goto('/play/' + $roomCode);
+		}
 	}
 </script>
 

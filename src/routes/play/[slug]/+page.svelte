@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { roomCode } from '$lib/stores/roomCode';
-	import { playerGuid, parsePlayerGuid } from '$lib/stores/playerGuid';
+	import { playerGuid } from '$lib/stores/playerGuid';
 	import QuestionCard from '../QuestionCard.svelte';
 	import type Question from '../QuestionCard.svelte';
 	import { teamName } from '$lib/stores/team';
@@ -22,11 +22,7 @@
 		if (!$roomCode) {
 			roomCode.set(slug);
 		}
-		const startGameResponse = await gameHub.invoke(
-			'StartGame',
-			$roomCode,
-			parsePlayerGuid($playerGuid)
-		);
+		const startGameResponse = await gameHub.invoke('StartGame', $roomCode, $playerGuid);
 		console.log(startGameResponse);
 		if (startGameResponse.success) {
 			await getNewQuestion();

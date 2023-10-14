@@ -14,17 +14,17 @@
 	lobbyHub.on('SavePlayerId', (savePlayerIdMessage) => {
 		console.log(savePlayerIdMessage);
 		if (savePlayerIdMessage.success) {
-			const value = {
-				id: savePlayerIdMessage.id,
-				timestamp: Date.now()
-			};
-			playerGuid.set(JSON.stringify(value));
+			playerGuid.set(savePlayerIdMessage.id);
 		}
 	});
 
 	async function assignName(): Promise<void> {
-		const parsedId = $playerGuid ? JSON.parse($playerGuid).id : '';
-		const assignNameResponse = await lobbyHub.invoke('UpdatePlayerName', name, $roomCode, parsedId);
+		const assignNameResponse = await lobbyHub.invoke(
+			'UpdatePlayerName',
+			name,
+			$roomCode,
+			$playerGuid
+		);
 		console.log(assignNameResponse);
 		if (assignNameResponse.success && $roomCode !== '') {
 			await goto('/lobby/' + $roomCode);
