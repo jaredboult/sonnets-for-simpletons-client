@@ -2,6 +2,7 @@
 	import { goto } from '$app/navigation';
 	import { roomCode } from '$lib/stores/roomCode';
 	import { playerGuid } from '$lib/stores/playerGuid';
+	import { logResponse } from '$lib/connectToHub';
 
 	export let data;
 	let lobbyHub = data.lobbyHub;
@@ -10,7 +11,7 @@
 
 	async function createRoom(): Promise<void> {
 		const createRoomResponse = await lobbyHub.invoke('CreateRoom');
-		console.log(createRoomResponse);
+		logResponse(createRoomResponse);
 		if (createRoomResponse.success) {
 			roomCode.set(createRoomResponse.roomId);
 			await goto('/name');
@@ -19,6 +20,7 @@
 
 	async function joinRoom(): Promise<void> {
 		const joinRoomResponse = await lobbyHub.invoke('JoinRoom', roomId.toUpperCase());
+		logResponse(joinRoomResponse);
 		if (joinRoomResponse.success) {
 			roomCode.set(joinRoomResponse.roomId);
 			await goto('/name');
@@ -26,7 +28,7 @@
 	}
 
 	lobbyHub.on('SavePlayerId', (savePlayerIdMessage) => {
-		console.log(savePlayerIdMessage);
+		logResponse(savePlayerIdMessage);
 		if (savePlayerIdMessage.success) {
 			playerGuid.set(savePlayerIdMessage.id);
 		}

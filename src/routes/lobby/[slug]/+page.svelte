@@ -2,6 +2,7 @@
 	import { roomCode } from '$lib/stores/roomCode';
 	import { goto } from '$app/navigation';
 	import { playerGuid } from '$lib/stores/playerGuid';
+	import { logResponse } from '$lib/connectToHub';
 
 	export let data;
 	let { lobbyHub, slug } = data;
@@ -12,7 +13,7 @@
 			roomCode.set(slug);
 		}
 		const getRoomDetailsResponse = await lobbyHub.invoke('GetRoomDetails', $roomCode);
-		console.log(getRoomDetailsResponse);
+		logResponse(getRoomDetailsResponse);
 		if (getRoomDetailsResponse.success) {
 			playerNames = getRoomDetailsResponse.playerNames;
 		} else {
@@ -24,12 +25,12 @@
 	getRoomDetails();
 
 	lobbyHub.on('UpdateRoomDetails', (updateRoomDetailsMessage) => {
-		console.log(updateRoomDetailsMessage);
+		logResponse(updateRoomDetailsMessage);
 		playerNames = updateRoomDetailsMessage.playerNames;
 	});
 
 	lobbyHub.on('StartGame', async (gameHasStartedResponse) => {
-		console.log(gameHasStartedResponse);
+		logResponse(gameHasStartedResponse);
 		if (gameHasStartedResponse.success) {
 			await lobbyHub.stop();
 			await goto('/play/' + $roomCode);
@@ -38,7 +39,7 @@
 
 	async function startGame() {
 		const startGameResponse = await lobbyHub.invoke('StartGameForRoom', $roomCode, $playerGuid);
-		console.log(startGameResponse);
+		logResponse(startGameResponse);
 		if (startGameResponse.success) {
 			await lobbyHub.stop();
 			await goto('/play/' + $roomCode);

@@ -2,6 +2,7 @@
 	import { goto } from '$app/navigation';
 	import { roomCode } from '$lib/stores/roomCode';
 	import { playerGuid } from '$lib/stores/playerGuid';
+	import { logResponse } from '$lib/connectToHub';
 
 	if (!$roomCode) {
 		goto('/');
@@ -12,7 +13,7 @@
 	let name = '';
 
 	lobbyHub.on('SavePlayerId', (savePlayerIdMessage) => {
-		console.log(savePlayerIdMessage);
+		logResponse(savePlayerIdMessage);
 		if (savePlayerIdMessage.success) {
 			playerGuid.set(savePlayerIdMessage.id);
 		}
@@ -25,7 +26,7 @@
 			$roomCode,
 			$playerGuid
 		);
-		console.log(assignNameResponse);
+		logResponse(assignNameResponse);
 		if (assignNameResponse.success && $roomCode !== '') {
 			await goto('/lobby/' + $roomCode);
 		}

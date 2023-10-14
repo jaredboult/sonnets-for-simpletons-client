@@ -4,6 +4,7 @@
 	import QuestionCard from '../QuestionCard.svelte';
 	import type Question from '../QuestionCard.svelte';
 	import { teamName } from '$lib/stores/team';
+	import { logResponse } from '$lib/connectToHub';
 
 	export let data;
 	let { gameHub, slug } = data;
@@ -12,7 +13,7 @@
 
 	async function getNewQuestion(): Promise<void> {
 		const getQuestionResponse = await gameHub.invoke('GetQuestion', $roomCode);
-		console.log(getQuestionResponse);
+		logResponse(getQuestionResponse);
 		if (getQuestionResponse.success) {
 			question = getQuestionResponse.answers;
 		}
@@ -23,21 +24,21 @@
 			roomCode.set(slug);
 		}
 		const startGameResponse = await gameHub.invoke('StartGame', $roomCode, $playerGuid);
-		console.log(startGameResponse);
+		logResponse(startGameResponse);
 		if (startGameResponse.success) {
 			await getNewQuestion();
 		}
 	}
 
 	gameHub.on('UpdateQuestion', (updateQuestionMessage) => {
-		console.log(updateQuestionMessage);
+		logResponse(updateQuestionMessage);
 		if (updateQuestionMessage.success) {
 			question = updateQuestionMessage.answers;
 		}
 	});
 
 	gameHub.on('NotifyTeam', (notifyTeamMessage) => {
-		console.log(notifyTeamMessage);
+		logResponse(notifyTeamMessage);
 		if (notifyTeamMessage.success) {
 			teamName.set(notifyTeamMessage.teamName);
 		}
