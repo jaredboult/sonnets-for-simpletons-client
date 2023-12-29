@@ -1,36 +1,57 @@
 <script lang="ts">
-    import { roomCode } from "../../../store";
+	import { roomCode } from '$lib/stores/roomCode';
+	import { playerGuid } from '$lib/stores/playerGuid';
+	import QuestionCard from '../QuestionCard.svelte';
+	import type Question from '../QuestionCard.svelte';
+	import { teamName } from '$lib/stores/team';
+	import { logResponse } from '$lib/connectToHub';
+	import Timer from '../Timer.svelte';
 
-    export let data;
-    let connection = data.connection;
-    let playerNames : string[] = [];
+	export let data;
+	let { gameHub, slug } = data;
 
-    function getRoomDetails(roomId : string){
-        connection.invoke("GetRoomDetails", roomId);
-    }
+	let question: Question;
 
-    getRoomDetails($roomCode);
+	async function getNewQuestion(): Promise<void> {
+		const getQuestionResponse = await gameHub.invoke('GetQuestion', $roomCode);
+		logResponse(getQuestionResponse);
+		if (getQuestionResponse.success) {
+			question = getQuestionResponse.answers;
+		}
+	}
 
-    connection.on("ReceiveRoomDetails", (getRoomDetailsResponse) => {
-        console.log(getRoomDetailsResponse);
-        if (getRoomDetailsResponse.success){
-            playerNames = getRoomDetailsResponse.playerNames;
-        }
-    })
+	async function startGame(): Promise<void> {
+		if (!$roomCode) {
+			roomCode.set(slug);
+		}
+		const startGameResponse = await gameHub.invoke('StartGame', $roomCode, $playerGuid);
+		logResponse(startGameResponse);
+		if (startGameResponse.success) {
+			await getNewQuestion();
+		}
+	}
+
+	gameHub.on('UpdateQuestion', (updateQuestionMessage) => {
+		logResponse(updateQuestionMessage);
+		if (updateQuestionMessage.success) {
+			question = updateQuestionMessage.answers;
+		}
+	});
+
+	gameHub.on('NotifyTeam', (notifyTeamMessage) => {
+		logResponse(notifyTeamMessage);
+		if (notifyTeamMessage.success) {
+			teamName.set(notifyTeamMessage.teamName);
+		}
+	});
+
+	startGame();
 </script>
 
-<main class="container mx-auto max-w-lg py-4">
-    <h1 class="font-black text-xl">{$roomCode}</h1>
+<div class="flex justify-center">
+	<Timer />
+</div>
 
-    <ol>
-        {#each playerNames as name}
-            <li>{name}</li>
-        {/each}
-    </ol>
-</main>
-
-<style>
-    h1 {
-        text-align: center;
-    }
-</style>
+{#if question}
+	<QuestionCard {question} on:click={getNewQuestion} />
+{/if}
