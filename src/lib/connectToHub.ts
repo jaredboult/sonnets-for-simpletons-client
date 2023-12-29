@@ -6,7 +6,7 @@ export async function connectToHub(path: string): Promise<HubConnection> {
 	const connection = new signalR.HubConnectionBuilder()
 		.withUrl(`https://localhost:7155/${path}`)
 		.withAutomaticReconnect()
-		.configureLogging(dev ? signalR.LogLevel.Warning : signalR.LogLevel.None)
+		.configureLogging(dev ? signalR.LogLevel.Debug : signalR.LogLevel.None)
 		.build();
 
 	async function start() {
@@ -22,6 +22,6 @@ export async function connectToHub(path: string): Promise<HubConnection> {
 	return connection;
 }
 
-export function logResponse(response: any) {
+export function logResponse(response: string) {
 	if (dev) console.log(response);
 }
